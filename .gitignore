@@ -1,0 +1,36 @@
+# Environment variables - never commit, contains database passwords
+.env
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+*.egg-info/
+.Python
+
+# Node
+node_modules/
+dist/
+build/
+.vite/
+
+# Database
+*.db
+*.sqlite
+postgres_data/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Alembic
+alembic/versions/*.pyc
