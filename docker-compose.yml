@@ -1,12 +1,10 @@
-version: '3.8'
-
 services:
   db:
     image: postgres:15
     environment:
-      POSTGRES_DB: RISE
+      POSTGRES_DB: docker_test_db
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${DB_PASSWORD:-changeme}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
@@ -20,7 +18,7 @@ services:
   backend:
     build: ./backend
     environment:
-      DATABASE_URL: postgresql://postgres:${DB_PASSWORD:-changeme}@db:5432/rise_db
+      DATABASE_URL: postgresql://postgres:${DB_PASSWORD}@db:5432/docker_test_db
     ports:
       - "8000:8000"
     depends_on:

@@ -10,7 +10,7 @@ load_dotenv()
 # second line is default value - change actual url in your .env file
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql://postgres:tmr%40pai3t6r@localhost:5432/RISE"
+    "postgresql://username:password@localhost:5432/RISE"
 )
 
 # create SQLAlchemy database engine and database metadata
