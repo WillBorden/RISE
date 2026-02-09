@@ -1,74 +1,42 @@
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { useState, useEffect } from 'react'
+import Header from './components/Header'
+import Navigation from './components/navigation'
+import Dashboard from './pages/dashboard'
+import Requirements from './pages/requirements'
+import Components from './pages/components'
+import Simulation from './pages/simulation'
+import Reports from './pages/reports'
 import './App.css'
 
 function App() {
-  const [requirements, setRequirements] = useState([])
-  const [components, setComponents] = useState([])
-  const [loading, setLoading] = useState(true)
+  const [currentProject, setCurrentProject] = useState(null)
 
   useEffect(() => {
-    // Fetch requirements
-    fetch('/api/requirements?limit=10')
+    // Fetch current project
+    fetch('/api/projects')
       .then(res => res.json())
       .then(data => {
-        setRequirements(data)
-        setLoading(false)
+        if (data.length > 0) {
+          setCurrentProject(data[0])
+        }
       })
-      .catch(err => console.error('Error fetching requirements:', err))
-
-    // Fetch components
-    fetch('/api/components?limit=10')
-      .then(res => res.json())
-      .then(data => setComponents(data))
-      .catch(err => console.error('Error fetching components:', err))
   }, [])
 
-  if (loading) {
-    return <div className="loading">Loading RISE...</div>
-  }
-
   return (
-    <div className="App">
-      <header>
-        <h1>RISE</h1>
-        <p>Rocket Integrated Systems Engineering</p>
-      </header>
-
-      <main>
-        <section className="data-section">
-          <h2>Requirements ({requirements.length})</h2>
-          <div className="data-list">
-            {requirements.map(req => (
-              <div key={req.id} className="data-card">
-                <h3>{req.requirement_id}</h3>
-                <p>{req.description}</p>
-                <div className="meta">
-                  <span>Owner: {req.owner || 'N/A'}</span>
-                  <span>Type: {req.requirement_type}</span>
-                  <span>Status: {req.requirement_status || 'N/A'}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className="data-section">
-          <h2>Components ({components.length})</h2>
-          <div className="data-list">
-            {components.map(comp => (
-              <div key={comp.id} className="data-card">
-                <h3>{comp.part_id}</h3>
-                <p>{comp.name}</p>
-                <div className="meta">
-                  <span>Type: {comp.item_type || 'N/A'}</span>
-                  <span>Mass: {comp.mass ? `${comp.mass} kg` : 'N/A'}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-      </main>
-    </div>
+    <Router>
+      <div className="App">
+        <Header currentProject={currentProject} />
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/requirements" element={<Requirements />} />
+          <Route path="/components" element={<Components />} />
+          <Route path="/simulation" element={<Simulation />} />
+          <Route path="/reports" element={<Reports />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 
