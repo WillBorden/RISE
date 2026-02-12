@@ -1,37 +1,36 @@
 import { useState, useEffect } from 'react'
-import './dashboard.css'
-import ProgressGauge from '../components/progressgauge'
+import { useProject } from '../contexts/ProjectContext'
+import './Dashboard.css'
+import ProgressGauge from '../components/ProgressGauge'
 
 function Dashboard() {
-  const [projectData, setProjectData] = useState(null)
+  const { currentProject } = useProject()
   const [requirements, setRequirements] = useState([])
   const [components, setComponents] = useState([])
   const [loading, setLoading] = useState(true)
   const [showProjectModal, setShowProjectModal] = useState(false)
 
   useEffect(() => {
-    // Fetch project data
-    fetch('/api/projects')
-      .then(res => res.json())
-      .then(data => {
-        if (data.length > 0) {
-          setProjectData(data[0]) // Use first project for now
-        }
-      })
+    if (!currentProject) {
+      setLoading(false)
+      return
+    }
 
-    // Fetch requirements
-    fetch('/api/requirements')
+    setLoading(true)
+    
+    // Fetch requirements for current project
+    fetch(`/api/requirements?project_id=${currentProject.id}`)
       .then(res => res.json())
       .then(data => {
         setRequirements(data)
         setLoading(false)
       })
 
-    // Fetch components
-    fetch('/api/components')
+    // Fetch components for current project
+    fetch(`/api/components?project_id=${currentProject.id}`)
       .then(res => res.json())
       .then(data => setComponents(data))
-  }, [])
+  }, [currentProject])
 
   // Calculate progress metrics
   const requirementsProgress = requirements.length > 0
@@ -63,6 +62,17 @@ function Dashboard() {
     return <div className="loading">Loading Dashboard</div>
   }
 
+  if (!currentProject) {
+    return (
+      <div className="page-container">
+        <div className="empty-state">
+          <h2>No Project Selected</h2>
+          <p>Please select a project from the header to view the dashboard.</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="dashboard">
       {/* Top Section */}
@@ -79,27 +89,27 @@ function Dashboard() {
           <div className="project-details">
             <div className="project-detail-item">
               <span className="detail-label">Project Name</span>
-              <span className="detail-value">{projectData?.name || 'N/A'}</span>
+              <span className="detail-value">{currentProject.name || 'N/A'}</span>
             </div>
             <div className="project-detail-item">
               <span className="detail-label">Type</span>
-              <span className="detail-value">{projectData?.project_type || 'N/A'}</span>
+              <span className="detail-value">{currentProject.project_type || 'N/A'}</span>
             </div>
             <div className="project-detail-item">
               <span className="detail-label">Target Altitude</span>
-              <span className="detail-value">{projectData?.target_altitude ? `${projectData.target_altitude} ft` : 'N/A'}</span>
+              <span className="detail-value">{currentProject.target_altitude ? `${currentProject.target_altitude} ft` : 'N/A'}</span>
             </div>
             <div className="project-detail-item">
               <span className="detail-label">Start Date</span>
               <span className="detail-value">
-                {projectData?.start_date ? new Date(projectData.start_date).toLocaleDateString() : 'N/A'}
+                {currentProject.start_date ? new Date(currentProject.start_date).toLocaleDateString() : 'N/A'}
               </span>
             </div>
           </div>
 
           <div className="project-description">
             <span className="detail-label">Description</span>
-            <p>{projectData?.description || 'No description provided'}</p>
+            <p>{currentProject.description || 'No description provided'}</p>
           </div>
         </div>
 
@@ -209,7 +219,7 @@ function Dashboard() {
             </div>
             <div className="stat-box">
               <span className="stat-label">Target Altitude</span>
-              <span className="stat-value">{projectData?.target_altitude || 'N/A'} ft</span>
+              <span className="stat-value">{currentProject.target_altitude || 'N/A'} ft</span>
             </div>
             <div className="stat-box">
               <span className="stat-label">Max Velocity</span>

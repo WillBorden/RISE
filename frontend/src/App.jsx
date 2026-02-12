@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { ProjectProvider } from './contexts/ProjectContext'
 import Header from './components/Header'
 import Navigation from './components/navigation'
 import Dashboard from './pages/dashboard'
@@ -10,33 +10,22 @@ import Reports from './pages/reports'
 import './App.css'
 
 function App() {
-  const [currentProject, setCurrentProject] = useState(null)
-
-  useEffect(() => {
-    // Fetch current project
-    fetch('/api/projects')
-      .then(res => res.json())
-      .then(data => {
-        if (data.length > 0) {
-          setCurrentProject(data[0])
-        }
-      })
-  }, [])
-
   return (
-    <Router>
-      <div className="App">
-        <Header currentProject={currentProject} />
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Dashboard />} />
-          <Route path="/requirements" element={<Requirements />} />
-          <Route path="/components" element={<Components />} />
-          <Route path="/simulation" element={<Simulation />} />
-          <Route path="/reports" element={<Reports />} />
-        </Routes>
-      </div>
-    </Router>
+    <ProjectProvider>
+      <Router>
+        <div className="App">
+          <Header />
+          <Navigation />
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/requirements" element={<Requirements />} />
+            <Route path="/components" element={<Components />} />
+            <Route path="/simulation" element={<Simulation />} />
+            <Route path="/reports" element={<Reports />} />
+          </Routes>
+        </div>
+      </Router>
+    </ProjectProvider>
   )
 }
 

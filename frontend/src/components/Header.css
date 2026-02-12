@@ -30,7 +30,7 @@
   padding: 0 1rem;
   background: rgba(255, 255, 255, 0.1);
   border: 2px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
+  border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,4 +58,97 @@
   color: white;
   font-size: 1.125rem;
   font-weight: 600;
+}
+
+.header-project-selector {
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
+  padding-left: 2rem;
+}
+
+.project-dropdown {
+  position: relative;
+}
+
+.project-dropdown-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  color: white;
+  font-size: 0.9375rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.2s;
+  min-width: 175px;
+}
+
+.project-dropdown-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.project-label {
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.project-name {
+  font-weight: 600;
+  flex: 1;
+}
+
+.dropdown-arrow {
+  font-size: 0.75rem;
+  opacity: 0.8;
+}
+
+.project-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--shadow-lg);
+  min-width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+.project-dropdown-item {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.project-dropdown-item:last-child {
+  border-bottom: none;
+}
+
+.project-dropdown-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.project-dropdown-item.active {
+  background: var(--bg-tertiary);
+  border-left: 3px solid var(--accent-primary);
+}
+
+.project-item-name {
+  color: var(--text-primary);
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.project-item-type {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }

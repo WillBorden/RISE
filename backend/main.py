@@ -1,7 +1,8 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from database import get_db, projects, requirements, components
+from typing import List, Optional
 
 app = FastAPI(
     title="RISE - Rocket Integrated Systems Engineering",
@@ -12,7 +13,7 @@ app = FastAPI(
 # middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Vite and other dev servers
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -38,10 +39,19 @@ def get_projects(db: Session = Depends(get_db)):
     project_list = db.query(projects).all()
     return project_list
 
-# Get all requirements
+# Get all requirements (with optional project filter)
 @app.get("/api/requirements")
-def get_requirements(limit: int = 100, db: Session = Depends(get_db)):
-    requirement_list = db.query(requirements).limit(limit).all()
+def get_requirements(
+    project_id: Optional[int] = Query(None),
+    limit: int = Query(1000),
+    db: Session = Depends(get_db)
+):
+    query = db.query(requirements)
+    
+    if project_id is not None:
+        query = query.filter(requirements.project_id == project_id)
+    
+    requirement_list = query.limit(limit).all()
     return requirement_list
 
 # Get single requirement by requirement_id
@@ -54,10 +64,19 @@ def get_requirement(requirement_id: str, db: Session = Depends(get_db)):
         return {"error": "Requirement not found"}
     return req
 
-# Get all components
+# Get all components (with optional project filter)
 @app.get("/api/components")
-def get_components(limit: int = 100, db: Session = Depends(get_db)):
-    component_list = db.query(components).limit(limit).all()
+def get_components(
+    project_id: Optional[int] = Query(None),
+    limit: int = Query(1000),
+    db: Session = Depends(get_db)
+):
+    query = db.query(components)
+    
+    if project_id is not None:
+        query = query.filter(components.project_id == project_id)
+    
+    component_list = query.limit(limit).all()
     return component_list
 
 # Get single component by part_id
